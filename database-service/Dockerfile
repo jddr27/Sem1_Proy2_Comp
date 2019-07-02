@@ -1,11 +1,8 @@
-# Derived from official mysql image (our base image)
-FROM mysql
+FROM mysql:latest
 
-# Add a database
-ENV MYSQL_DATABASE company
 ENV MYSQL_ROOT_PASSWORD 123456789
+ENV MYSQL_DATABASE company
+ENV MYSQL_USER daniel  
+ENV MYSQL_PASSWORD daniel
 
-# Add the content of the sql-scripts/ directory to your image
-# All scripts in docker-entrypoint-initdb.d/ are automatically
-# executed during container startup
-COPY ./sql-scripts/ /docker-entrypoint-initdb.d/
+ADD setup.sql /docker-entrypoint-initdb.d
