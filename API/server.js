@@ -1,19 +1,22 @@
 var app = require('express')(); // Express App include
 var mysql = require('mysql'); // Mysql include
 var bodyParser = require("body-parser"); // Body parser for fetch posted data
-const ip = process.env.IP;
-const usr = process.env.USR;
-const pass = process.env.PASS;
+
 var connection = mysql.createConnection({ // Mysql Connection
-    host : ip,
-    user : usr,
-    password : pass,
-    database : 'company',
-   // insecureAuth : true,
-   // socketPath: '/var/run/mysqld/mysqld.sock',
+    host            : process.env.DATABASE_HOST,
+    port            : process.env.MYSQL_PORT,
+    user            : process.env.MYSQL_USER,
+    password        : process.env.MYSQL_PASSWORD,
+    database        : process.env.MYSQL_DATABASE
 });
 
-connection.connect();
+connection.connect(function(err){
+    if(err){
+        console.error("error connecting: " + err.stack);
+        return process.exit(22); //consistently exit so the Docker container will restart until it connects to the sql db
+    }
+    console.log("connected as id " + connection.threadId);
+});
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json()); // Body parser use JSON data

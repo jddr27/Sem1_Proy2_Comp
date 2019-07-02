@@ -1,16 +1,23 @@
-version: '2'
+version: '3'
 services:
-  security:
-    build: ./sample-service
-    ports:
-     - "8123:8123"
-    depends_on:
-     - db
-    environment:
-     - IP=db
-     - USR='daniel'
-     - PASS='daniel'
-    volumes:
-     - ./sample-service/api:/app/api
   db:
-    build: ./database-service
+    build: ./BD
+    environment:
+      MYSQL_DATABASE: company
+      MYSQL_ROOT_PASSWORD: 123456789
+      MYSQL_USER: daniel
+      MYSQL_PASSWORD: daniel
+      DATABASE_HOST: db
+  web:
+    build: ./API
+    environment:
+      DATABASE_HOST: db
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: company
+      MYSQL_USER: daniel
+      MYSQL_PASSWORD: daniel
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    restart: on-failure 
